@@ -1,0 +1,23 @@
+{
+  "appId": "co.ezai.app",
+  "appName": "EzAi",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "server": {
+    "allowNavigation": [
+      "*"
+    ]
+  },  
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["apple.com", "google.com"]
+    }
+  },
+  "cordova": {
+  }
+}
