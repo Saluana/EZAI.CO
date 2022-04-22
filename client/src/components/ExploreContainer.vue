@@ -10,14 +10,21 @@
         >UI Components</a
       >
     </p>
+    <button @click="getCurrentUser">Click me</button>
   </div>
 </template>
 
 <script>
+import firebase from "../firebase/firebase";
 export default {
   name: "ExploreContainer",
   props: {
     name: String,
+  },
+  setup() {
+    const { getCurrentUser } = firebase;
+
+    return { getCurrentUser };
   },
 };
 </script>

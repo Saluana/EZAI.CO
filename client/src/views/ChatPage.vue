@@ -15,7 +15,6 @@
         <ExploreContainer name="Tab 2 page" />
       </ion-content>
     </div>
-    <div v-else><LoginContainer /></div>
   </ion-page>
 </template>
 
@@ -29,7 +28,6 @@ import {
 } from "@ionic/vue";
 import ExploreContainer from "@/components/ExploreContainer.vue";
 import state from "../composables/state.js";
-import LoginContainer from "../components/LoginContainer.vue";
 
 export default {
   components: {
@@ -39,10 +37,10 @@ export default {
     IonTitle,
     IonContent,
     IonPage,
-    LoginContainer,
   },
   setup() {
     const { user, menu } = state;
+
     return {
       user,
       menu,

@@ -7,10 +7,12 @@
 
 <script>
 import { IonApp, IonRouterOutlet } from "@ionic/vue";
-import { defineComponent, onMounted } from "vue";
-import state from "./composables/state";
-import MenuContainer from "./components/MenuContainer.vue";
+import { defineComponent, watchEffect, ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import state from "./composables/state.js";
 import { Storage } from "@capacitor/storage";
+
+import MenuContainer from "./components/MenuContainer.vue";
 
 export default defineComponent({
   name: "App",
@@ -21,15 +23,34 @@ export default defineComponent({
   },
   setup() {
     const { user } = state;
+    const router = useRouter();
+    const userChecked = ref(false);
 
     onMounted(async () => {
-      const token = await Storage.get({ key: "token" });
-      if (token) {
+      const idToken = await Storage.get({ key: "token" });
+      if (idToken) {
         user.value.isLoggedIn = true;
+        userChecked.value = true;
       }
     });
 
-    return {};
+    watchEffect(() => {
+      //get current router location
+      const path = ref(router.currentRoute.value.path);
+      if (
+        user.value.isLoggedIn &&
+        path.value === "/tabs/login" &&
+        userChecked.value
+      ) {
+        router.push("/tabs/chat");
+      } else if (
+        !user.value.isLoggedIn &&
+        path.value !== "/tabs/login" &&
+        userChecked.value
+      ) {
+        router.push("/tabs/login");
+      }
+    });
   },
 });
 </script>

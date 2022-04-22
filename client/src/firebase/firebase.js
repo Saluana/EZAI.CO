@@ -6,7 +6,6 @@ import { Storage } from "@capacitor/storage";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 
 //eslint-disable-next-line
-
 const { user, menuIsOpen, toggleMenu } = state;
 console.log(user.value);
 
@@ -18,6 +17,7 @@ import {
   onAuthStateChanged,
   browserLocalPersistence,
   initializeAuth,
+  signOut,
 } from "firebase/auth";
 
 //Configures firebase app
@@ -57,7 +57,7 @@ async function doesUserExist(email) {
 }
 
 //Adds a user to mongoDB
-async function addUserToDB(username, email) {
+async function addUserToDB(username, email, uid) {
   let success = null;
 
   await fetch("http://localhost:3000/users/create", {
@@ -68,6 +68,7 @@ async function addUserToDB(username, email) {
     body: JSON.stringify({
       username: username,
       email: email,
+      uid: uid,
     }),
   })
     .then((res) => res.json())
@@ -89,9 +90,10 @@ async function createUser(username, email, password) {
       // Signed in
       const userData = userCredential.user;
       console.log(userData);
-      let userAdded = await addUserToDB(username, email);
+      let userAdded = await addUserToDB(username, email, userData.uid);
 
       if (userAdded) {
+        Storage.set({ key: "signedInWith", value: "email" });
         user.value.isLoggedIn = true;
       } else {
         user.value.isLoggedIn = false;
@@ -106,14 +108,25 @@ async function createUser(username, email, password) {
 //Login using Google
 async function authenticateWithGoogle() {
   await FirebaseAuthentication.signInWithGoogle().then(async (result) => {
-    console.log(result);
     const userData = result.user;
-    if (doesUserExist(userData.email)) {
+    if (await doesUserExist(userData.email)) {
+      console.log("User exists");
+      await FirebaseAuthentication.getIdToken().then(async (idToken) => {
+        await Storage.set({ key: "token", value: idToken.token });
+      });
       user.value.isLoggedIn = true;
     } else {
-      let userAdded = await addUserToDB(userData.displayName, userData.email);
+      let userAdded = await addUserToDB(
+        userData.displayName,
+        userData.email,
+        userData.uid
+      );
+
       console.log(userAdded);
       if (userAdded) {
+        await FirebaseAuthentication.getIdToken().then(async (idToken) => {
+          await Storage.set({ key: "token", value: idToken.token });
+        });
         user.value.isLoggedIn = true;
         console.log(user.value.isLoggedIn);
       } else {
@@ -124,30 +137,40 @@ async function authenticateWithGoogle() {
 }
 
 //check the state of the user
+
 onAuthStateChanged(auth, async (userData) => {
   if (userData) {
-    let token = await Storage.get({ key: "token" });
-
-    if (token) {
-      FirebaseAuthentication.getIdToken().then(async (idToken) => {
-        await Storage.set({ key: "token", value: idToken.token });
-      });
+    const signedInWith = await Storage.get({ key: "signedInWith" });
+    let idToken;
+    if (signedInWith.value === "email") {
+      idToken = await auth.currentUser.getIdToken(false);
+      console.log("email ID Token: " + idToken);
+    } else {
+      const token = await FirebaseAuthentication.getIdToken();
+      idToken = token.token;
     }
+
+    await Storage.set({ key: "token", value: idToken });
+
     user.value.isLoggedIn = true;
   } else {
-    await Storage.remove({ key: "token" });
-    user.value.isLoggedIn = false;
+    console.log("No user data");
   }
 });
 
-function signUserOut() {
-  auth.signOut().then(async () => {
-    Storage.remove({ key: "token" });
-    user.value.isLoggedIn = false;
-    if (menuIsOpen.value) {
-      toggleMenu();
-    }
-  });
+async function signUserOut() {
+  const signedInWith = await Storage.get({ key: "signedInWith" });
+  if (signedInWith.value === "email") {
+    await signOut(auth);
+  } else {
+    await FirebaseAuthentication.signOut();
+  }
+  await Storage.remove({ key: "token" });
+  await Storage.remove({ key: "signedInWith" });
+  user.value.isLoggedIn = false;
+  if (menuIsOpen.value) {
+    toggleMenu();
+  }
 }
 
 async function signInWithEmail(email, password) {
@@ -158,9 +181,11 @@ async function signInWithEmail(email, password) {
       console.log(userData);
 
       FirebaseAuthentication.getIdToken().then(async (idToken) => {
+        console.log(idToken);
         await Storage.set({ key: "token", value: idToken.token });
       });
 
+      await Storage.set({ key: "signedInWith", value: "email" });
       user.value.isLoggedIn = true;
       console.log(user.value.isLoggedIn);
     })
@@ -171,9 +196,26 @@ async function signInWithEmail(email, password) {
     });
 }
 
+async function getCurrentUser() {
+  const signedInWith = await Storage.get({ key: "signedInWith" });
+  console.log(signedInWith.value);
+  if (signedInWith.value === "email") {
+    console.log(auth.currentUser);
+  } else {
+    FirebaseAuthentication.getCurrentUser()
+      .then((userData) => {
+        console.log(userData);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+}
+
 export default {
   createUser,
   authenticateWithGoogle,
   signUserOut,
   signInWithEmail,
+  getCurrentUser,
 };
