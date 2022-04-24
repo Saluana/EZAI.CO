@@ -22,14 +22,19 @@ export default defineComponent({
     MenuContainer,
   },
   setup() {
-    const { user } = state;
+    const { user, updateUser } = state;
     const router = useRouter();
     const userChecked = ref(false);
 
     onMounted(async () => {
       const idToken = await Storage.get({ key: "token" });
-      if (idToken) {
-        user.value.isLoggedIn = true;
+
+      if (idToken.value) {
+        await updateUser(true);
+        console.log(user.value);
+        userChecked.value = true;
+      } else {
+        user.value.isLoggedIn = false;
         userChecked.value = true;
       }
     });
@@ -51,6 +56,7 @@ export default defineComponent({
         router.push("/tabs/login");
       }
     });
+    return { user };
   },
 });
 </script>
