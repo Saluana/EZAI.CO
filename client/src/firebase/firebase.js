@@ -160,8 +160,6 @@ async function authenticateWithGoogle() {
   });
 }
 
-//check the state of the user
-
 onAuthStateChanged(auth, async (userData) => {
   if (userData) {
     //Check whether user signed in with email or google to determine which firebase auth method to use
@@ -179,7 +177,8 @@ onAuthStateChanged(auth, async (userData) => {
 
     user.value.isLoggedIn = true;
   } else {
-    signUserOut();
+    //signUserOut();
+    console.log("Else triggered");
   }
 });
 
@@ -208,13 +207,13 @@ async function signInWithEmail(email, password) {
     .then(async (result) => {
       const userData = result.user;
 
-      FirebaseAuthentication.getIdToken().then(async (idToken) => {
-        await Storage.set({ key: "token", value: idToken.token });
-        const dbUserData = await doesUserExist(userData.uid);
-        await Storage.set({ key: "user", value: JSON.stringify(dbUserData) });
-        await Storage.set({ key: "signedInWith", value: "email" });
-        await updateUser(true);
-      });
+      const idToken = await auth.currentUser.getIdToken(false);
+      console.log(idToken);
+      await Storage.set({ key: "token", value: idToken });
+      const dbUserData = await doesUserExist(userData.uid);
+      await Storage.set({ key: "user", value: JSON.stringify(dbUserData) });
+      await Storage.set({ key: "signedInWith", value: "email" });
+      await updateUser(true);
 
       user.value.isLoggedIn = true;
       console.log(user.value.isLoggedIn);
@@ -230,6 +229,7 @@ async function signInWithEmail(email, password) {
 async function getCurrentUser() {
   //check auth method to determine package to use
   const signedInWith = await Storage.get({ key: "signedInWith" });
+  console.log("Signed in with ");
   console.log(signedInWith.value);
   if (signedInWith.value === "email") {
     console.log(auth.currentUser);
