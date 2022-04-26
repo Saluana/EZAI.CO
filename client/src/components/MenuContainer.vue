@@ -8,7 +8,7 @@
       </ion-header>
       <ion-content>
         <ion-list>
-          <ion-item @click="signUserOut">Sign Out</ion-item>
+          <ion-item @click="signUserOut(router)">Sign Out</ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>
@@ -35,6 +35,7 @@ import {
 } from "@ionic/vue";
 import firebase from "../firebase/firebase";
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -49,8 +50,9 @@ export default defineComponent({
   },
   setup() {
     const { signUserOut } = firebase;
+    const router = useRouter();
 
-    return { signUserOut };
+    return { signUserOut, router };
   },
 });
 </script>

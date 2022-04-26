@@ -14,7 +14,7 @@
       "launchShowDuration": 0
     },
     "FirebaseAuthentication": {
-      "skipNativeAuth": false,
+      "skipNativeAuth": true,
       "providers": ["apple.com", "google.com"]
     }
   },

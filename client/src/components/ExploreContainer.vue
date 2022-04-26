@@ -10,12 +10,20 @@
         >UI Components</a
       >
     </p>
-    <button @click="getCurrentUser">Click me</button>
+    <button
+      @click="
+        getCurrentUser();
+        checkStorage();
+      "
+    >
+      Click me
+    </button>
   </div>
 </template>
 
 <script>
 import firebase from "../firebase/firebase";
+import { Storage } from "@capacitor/storage";
 export default {
   name: "ExploreContainer",
   props: {
@@ -23,8 +31,12 @@ export default {
   },
   setup() {
     const { getCurrentUser } = firebase;
+    async function checkStorage() {
+      const { value } = await Storage.get({ key: "user" });
+      console.log(value);
+    }
 
-    return { getCurrentUser };
+    return { getCurrentUser, checkStorage };
   },
 };
 </script>

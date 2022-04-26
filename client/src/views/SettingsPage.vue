@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <div v-if="user.isLoggedIn">
+    <div v-if="isLoggedIn">
       <ion-header>
         <ion-toolbar>
           <ion-title>Tab 2</ion-title>
@@ -39,10 +39,12 @@ export default {
     IonPage,
   },
   setup() {
-    const { user, menu } = state;
+    const { user, isLoggedIn, menu } = state;
+
     return {
       user,
       menu,
+      isLoggedIn,
     };
   },
 };

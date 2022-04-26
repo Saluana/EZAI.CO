@@ -2,7 +2,7 @@
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <div v-if="user.isLoggedIn">
+      <div v-if="isLoggedIn">
         <ion-tab-bar slot="bottom">
           <ion-tab-button tab="chat" href="/tabs/chat">
             <ion-icon :icon="chatbubbles" />
@@ -41,7 +41,7 @@ import {
 } from "@ionic/vue";
 import { menu, square, person, chatbubbles, create } from "ionicons/icons";
 // eslint-disable-next-line
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import state from "../composables/state.js";
 import firebase from "../firebase/firebase";
 
@@ -56,8 +56,15 @@ export default {
     IonRouterOutlet,
   },
   setup() {
-    const { user, toggleMenu } = state;
+    const { user, isLoggedIn, toggleMenu } = state;
     const { signUserOut } = firebase;
+
+    onMounted(() => {
+      if (window.localStorage.getItem("user")) {
+        user.value = JSON.parse(window.localStorage.getItem("user"));
+        isLoggedIn.value = true;
+      }
+    });
 
     return {
       menu,
@@ -68,6 +75,7 @@ export default {
       create,
       signUserOut,
       toggleMenu,
+      isLoggedIn,
     };
   },
 };
