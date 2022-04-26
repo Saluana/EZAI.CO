@@ -41,9 +41,10 @@ import {
 } from "@ionic/vue";
 import { menu, square, person, chatbubbles, create } from "ionicons/icons";
 // eslint-disable-next-line
-import { ref, onMounted } from "vue";
+import { onMounted, watchEffect } from "vue";
 import state from "../composables/state.js";
-import firebase from "../firebase/firebase";
+import { useRouter } from "vue-router";
+import { Storage } from "@capacitor/storage";
 
 export default {
   components: {
@@ -57,12 +58,31 @@ export default {
   },
   setup() {
     const { user, isLoggedIn, toggleMenu } = state;
-    const { signUserOut } = firebase;
+    const router = useRouter();
 
-    onMounted(() => {
-      if (window.localStorage.getItem("user")) {
-        user.value = JSON.parse(window.localStorage.getItem("user"));
-        isLoggedIn.value = true;
+    onMounted(async () => {
+      //make sure the user is logged in
+      await Storage.get({ key: "user" }).then(({ value }) => {
+        if (value && !isLoggedIn.value) {
+          user.value = JSON.parse(value);
+          isLoggedIn.value = true;
+        } else {
+          isLoggedIn.value = false;
+        }
+      });
+    });
+
+    watchEffect(() => {
+      if (
+        router.currentRoute.value.path === "/tabs/login" &&
+        isLoggedIn.value
+      ) {
+        router.replace("/tabs/chat");
+      } else if (
+        router.currentRoute.value.path !== "/tabs/login" &&
+        !isLoggedIn.value
+      ) {
+        router.replace("/tabs/login");
       }
     });
 
@@ -73,7 +93,6 @@ export default {
       user,
       chatbubbles,
       create,
-      signUserOut,
       toggleMenu,
       isLoggedIn,
     };

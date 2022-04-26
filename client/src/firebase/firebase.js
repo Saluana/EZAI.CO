@@ -15,9 +15,6 @@ import {
   getAuth,
   browserLocalPersistence,
   initializeAuth,
-  signInWithRedirect,
-  getRedirectResult,
-  GoogleAuthProvider,
 } from "firebase/auth";
 
 //Configures firebase app
@@ -129,7 +126,7 @@ async function login() {
     }
     let dbUser = fbUser ? await doesUserExist(fbUser.uid) : null;
     console.log(dbUser);
-    if (fbUser) {
+    if (dbUser) {
       console.log("User found in db....");
       await Storage.set({ key: "user", value: JSON.stringify(dbUser) });
       user.value = dbUser;
@@ -161,6 +158,9 @@ async function signUserOut(router) {
   await FirebaseAuthentication.signOut();
   Storage.clear();
   isLoggedIn.value = false;
+  if (menuIsOpen) {
+    toggleMenu();
+  }
   router.replace("/tabs/login");
 }
 
