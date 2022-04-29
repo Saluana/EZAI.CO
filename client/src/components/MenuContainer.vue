@@ -22,7 +22,7 @@
 }
 </style>
 
-<script>
+<script lang="ts">
 import {
   IonContent,
   IonHeader,

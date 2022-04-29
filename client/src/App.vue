@@ -5,10 +5,12 @@
   </ion-app>
 </template>
 
-<script>
+<script lang="ts">
 import { IonApp, IonRouterOutlet } from "@ionic/vue";
 import { defineComponent } from "vue";
-
+import { watchEffect } from "vue";
+import { useRouter } from "vue-router";
+import state from "./composables/state";
 import MenuContainer from "./components/MenuContainer.vue";
 
 export default defineComponent({
@@ -18,6 +20,20 @@ export default defineComponent({
     IonRouterOutlet,
     MenuContainer,
   },
-  setup() {},
+  setup() {
+    const { isLoggedIn } = state;
+    const router = useRouter();
+
+    watchEffect(() => {
+      if (router.currentRoute.value.path === "/login" && isLoggedIn.value) {
+        router.replace("/tabs/tab1");
+      } else if (
+        router.currentRoute.value.path !== "/login" &&
+        !isLoggedIn.value
+      ) {
+        router.replace("/login");
+      }
+    });
+  },
 });
 </script>

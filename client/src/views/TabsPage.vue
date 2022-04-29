@@ -2,34 +2,33 @@
   <ion-page>
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
-      <div v-if="isLoggedIn">
-        <ion-tab-bar slot="bottom">
-          <ion-tab-button tab="chat" href="/tabs/chat">
-            <ion-icon :icon="chatbubbles" />
-            <ion-label>Chat</ion-label>
-          </ion-tab-button>
+      <ion-tab-bar slot="bottom">
+        <ion-tab-button tab="tab1" href="/tabs/tab1">
+          <ion-icon :icon="triangle" />
+          <ion-label>Tab 1</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="write" href="/tabs/write">
-            <ion-icon :icon="create" />
-            <ion-label>Write</ion-label>
-          </ion-tab-button>
+        <ion-tab-button tab="tab2" href="/tabs/tab2">
+          <ion-icon :icon="ellipse" />
+          <ion-label>Tab 2</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="profile" href="/tabs/profile">
-            <ion-icon :icon="person" />
-            <ion-label>Profile</ion-label>
-          </ion-tab-button>
+        <ion-tab-button tab="tab3" href="/tabs/tab3">
+          <ion-icon :icon="square" />
+          <ion-label>Tab 3</ion-label>
+        </ion-tab-button>
 
-          <ion-tab-button tab="settings" @click="toggleMenu">
-            <ion-icon :icon="menu" />
-            <ion-label>Menu</ion-label>
-          </ion-tab-button>
-        </ion-tab-bar>
-      </div>
+        <ion-tab-button tab="settings" @click="toggleMenu">
+          <ion-icon :icon="triangle" />
+          <ion-label>Menu</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
     </ion-tabs>
   </ion-page>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from "vue";
 import {
   IonTabBar,
   IonTabButton,
@@ -39,14 +38,11 @@ import {
   IonPage,
   IonRouterOutlet,
 } from "@ionic/vue";
-import { menu, square, person, chatbubbles, create } from "ionicons/icons";
-// eslint-disable-next-line
-import { onMounted, watchEffect } from "vue";
-import state from "../composables/state.js";
-import { useRouter } from "vue-router";
-import { Storage } from "@capacitor/storage";
+import { ellipse, square, triangle } from "ionicons/icons";
+import state from "@/composables/state";
 
-export default {
+export default defineComponent({
+  name: "TabsPage",
   components: {
     IonLabel,
     IonTabs,
@@ -57,45 +53,14 @@ export default {
     IonRouterOutlet,
   },
   setup() {
-    const { user, isLoggedIn, toggleMenu } = state;
-    const router = useRouter();
-
-    onMounted(async () => {
-      //make sure the user is logged in
-      await Storage.get({ key: "user" }).then(({ value }) => {
-        if (value && !isLoggedIn.value) {
-          user.value = JSON.parse(value);
-          isLoggedIn.value = true;
-        } else {
-          isLoggedIn.value = false;
-        }
-      });
-    });
-
-    watchEffect(() => {
-      if (
-        router.currentRoute.value.path === "/tabs/login" &&
-        isLoggedIn.value
-      ) {
-        router.replace("/tabs/chat");
-      } else if (
-        router.currentRoute.value.path !== "/tabs/login" &&
-        !isLoggedIn.value
-      ) {
-        router.replace("/tabs/login");
-      }
-    });
+    const { toggleMenu } = state;
 
     return {
-      menu,
+      ellipse,
       square,
-      person,
-      user,
-      chatbubbles,
-      create,
+      triangle,
       toggleMenu,
-      isLoggedIn,
     };
   },
-};
+});
 </script>

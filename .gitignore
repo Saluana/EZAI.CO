@@ -111,5 +111,5 @@ npm-debug.log*
 client/ios
 client/dist
 
-firebase-config.json
+firebase-config.ts
 
