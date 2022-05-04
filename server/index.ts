@@ -24,6 +24,8 @@ res.send("Hello world");
 })
 const users = require("./routes/users");
 app.use("/users", users);
+const imageai = require("./routes/ai/imageai");
+app.use("/image", imageai);
 
 app.listen(3000, () => {
   console.log("Listening on port 3000");

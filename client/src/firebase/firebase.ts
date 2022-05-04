@@ -5,6 +5,7 @@ import state from "@/composables/state";
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 import { Capacitor } from "@capacitor/core";
 import { Storage } from "@capacitor/storage";
+import {Http} from "@capacitor-community/http"
 
 
 //eslint-disable-next-line
@@ -41,6 +42,25 @@ if (Capacitor.isNativePlatform()) {
 }
 
 //Checks if a user exists in the MongoDB Database
+async function doesUserExist(uid: string): Promise<object | null> {
+const idToken = await getIdToken();
+const options = {
+  url: "http://192.168.100.142:3000/users/check/" + uid,
+  headers: {
+      authorization: idToken,
+      'Content-Type': 'application/json'
+  }
+  }
+  const response: any = await Http.get(options);
+  if (response) {
+    console.log("success", response)
+    return response.data.user;
+  } else {
+    console.log("failure", response);
+    return null
+  }
+}
+/*
 async function doesUserExist(uid:string) {
   const response = new Promise(async (resolve, reject) => {
     let idToken = await auth.currentUser.getIdToken(true);
@@ -69,9 +89,28 @@ async function doesUserExist(uid:string) {
       });
   });
   return await response;
-}
+} */
 
 //Adds a user to mongoDB
+async function addUserToDB(username:string, email:string, uid:string): Promise<object | null> {
+  const idToken = await getIdToken();
+  const options = {
+    url: "http://192.168.100.142:3000/users/create",
+    headers: {
+      authorization: idToken,
+      'Content-Type': 'application/json'
+    }, data: {username, email, uid}
+  }
+  const response: any = await Http.post(options);
+  if (response) {
+    console.log("success", response.data.user)
+    return response.data.user;
+  } else {
+    console.log("failure", response);
+    return null
+  }
+}
+/*
 async function addUserToDB(username:string, email:string, uid:string) {
   let response = new Promise(async (resolve, reject) => {
     let idToken = await auth.currentUser.getIdToken(true);
@@ -107,7 +146,7 @@ async function addUserToDB(username:string, email:string, uid:string) {
       });
   });
   return await response;
-}
+} */
 
 //Sign up using username and password
 async function createUser(username: string, email: string, password: string) {
@@ -178,15 +217,15 @@ async function loginWithGoogle() {
 
       await doesUserExist(result.user.uid)
         .then(async (dbUser:any) => {
+          //Does the user exist?
           if (dbUser) {
             console.log("User exists in DB");
             await Storage.set({ key: "user", value: JSON.stringify(dbUser) });
             user.value = dbUser;
             isLoggedIn.value = true;
-          }
-        })
-        .catch(async (error) => {
-          if (error === null) {
+          } else {
+            //If not create an account in mongoDB
+            console.log("YEET")
             const username:string = result.user.displayName ? result.user.displayName : "";
             const email:string = result.user.email ? result.user.email : "";
             const uid:string = result.user.uid ? result.user.uid : "";
@@ -207,10 +246,10 @@ async function loginWithGoogle() {
                   isLoggedIn.value = true;
                 }
               })
-              .catch((error) => {
-                console.log(error);
-              });
           }
+        })
+        .catch(async (error) => {
+          console.log(error)
         });
     })
     .catch((error) => {
@@ -228,6 +267,12 @@ async function signUserOut() {
   }
 }
 
+async function getIdToken(){
+  let idToken = await auth.currentUser.getIdToken(true);
+  console.log("idToken", idToken);
+  return idToken;
+}
+
 export default {
   signUserOut,
   doesUserExist,
@@ -235,4 +280,5 @@ export default {
   loginWithGoogle,
   createUser,
   signInWithEmail,
+  getIdToken
 };

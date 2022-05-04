@@ -12,7 +12,7 @@
         </ion-toolbar>
       </ion-header>
 
-      <ExploreContainer name="Tab 1 page" />
+      <NotesContainer name="Tab 1 page" />
     </ion-content>
   </ion-page>
 </template>
@@ -26,12 +26,12 @@ import {
   IonTitle,
   IonContent,
 } from "@ionic/vue";
-import ExploreContainer from "../components/ExploreContainer.vue";
+import NotesContainer from "../components/NotesContainer.vue";
 
 export default defineComponent({
   name: "Tab1Page",
   components: {
-    ExploreContainer,
+    NotesContainer,
     IonHeader,
     IonToolbar,
     IonTitle,

@@ -13,6 +13,9 @@
       </ion-header>
 
       <ExploreContainer name="Tab 2 page" />
+      <button @click="doesUserExist('wplWA58hamWdJVVzaka9m8p5iMQ2')">
+        Does user exist
+      </button>
     </ion-content>
   </ion-page>
 </template>
@@ -27,6 +30,7 @@ import {
   IonContent,
 } from "@ionic/vue";
 import ExploreContainer from "../components/ExploreContainer.vue";
+import firebase from "../firebase/firebase";
 
 export default defineComponent({
   name: "Tab2Page",
@@ -38,5 +42,18 @@ export default defineComponent({
     IonContent,
     IonPage,
   },
+  setup() {
+    const { doesUserExist } = firebase;
+    return {
+      doesUserExist,
+    };
+  },
 });
 </script>
+
+<style scoped>
+button {
+  height: 50px;
+  width: 100px;
+}
+</style>
