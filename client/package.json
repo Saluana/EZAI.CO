@@ -2,6 +2,7 @@
   "name": "ezai",
   "version": "0.0.1",
   "private": true,
+  "description": "An Ionic project",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -22,8 +23,11 @@
     "@capacitor/storage": "^1.2.5",
     "@ionic/vue": "^6.0.0",
     "@ionic/vue-router": "^6.0.0",
+    "autoprefixer": "^10",
     "core-js": "^3.6.5",
     "firebase": "^9.7.0",
+    "postcss": "^8",
+    "tailwindcss": "^3",
     "tesseract.js": "^2.1.5",
     "vue": "^3.2.21",
     "vue-router": "^4.0.12"
@@ -49,7 +53,7 @@
     "eslint-plugin-vue": "^8.2.0",
     "jest": "^27.3.1",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.3.5"
-  },
-  "description": "An Ionic project"
+    "typescript": "^4.3.5",
+    "vue-cli-plugin-tailwind": "~3.0.0"
+  }
 }

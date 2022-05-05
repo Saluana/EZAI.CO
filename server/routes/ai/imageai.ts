@@ -9,23 +9,44 @@ const configuration = new Configuration({
 
   const openai = new OpenAIApi(configuration);
   
-  router.get("/notes", isTokenValid, async (req, res) => {
+  router.post("/notes", isTokenValid, async (req, res) => {
     const response = await openai.createCompletion("text-davinci-002", {
-      prompt: `${req.body.text} \n Create a list of notes about this text.`,
+      prompt: `Create a bullet point list of notes with all the key points from this article:  \n ${req.body.text}`,
       temperature: 0.7,
       max_tokens: 700,
       top_p: 1.0,
       frequency_penalty: 0.0,
       presence_penalty: 0.0,
     });
-  
-    res.json(response.data.choices);
+    
+    if (response.data) {
+      res.status(200).json({status: "success", message: "Grammar corrected.", response: response.data.choices[0].text});
+      } else {
+      res.status(200).json({status: "failure", message: "Grammar not corrected.", response: null});
+      }
+  });
+
+  router.post("/summarize", isTokenValid, async (req, res) => {
+    const response = await openai.createCompletion("text-davinci-002", {
+      prompt: `summarize this in 200 words or less:  \n ${req.body.text}`,
+      temperature: 0.7,
+      max_tokens: 700,
+      top_p: 1.0,
+      frequency_penalty: 0.0,
+      presence_penalty: 0.0,
+    });
+    
+    if (response.data) {
+      res.status(200).json({status: "success", message: "Grammar corrected.", response: response.data.choices[0].text});
+      } else {
+      res.status(200).json({status: "failure", message: "Grammar not corrected.", response: null});
+      }
   });
 
   router.post("/correct", isTokenValid, async (req, res) => {
     console.log(req.body.text);
     const response = await openai.createCompletion("text-davinci-002", {
-      prompt: `${req.body.text} \n Correct the grammar and remove unexpected characters.`,
+      prompt: `${req.body.text} \n Correct the grammar, remove unexpected characters and add paragraphs where needed.`,
       temperature: 0.7,
       max_tokens: 700,
       top_p: 1.0,

@@ -60,36 +60,6 @@ const options = {
     return null
   }
 }
-/*
-async function doesUserExist(uid:string) {
-  const response = new Promise(async (resolve, reject) => {
-    let idToken = await auth.currentUser.getIdToken(true);
-    console.log("does the user exist?", idToken);
-    
-    await fetch("http://localhost:3000/users/check/" + uid, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: idToken,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          console.log("Check user success!!");
-          resolve(data.user);
-        } else {
-          console.log("Check user failure!!");
-          reject(null);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        reject(null);
-      });
-  });
-  return await response;
-} */
 
 //Adds a user to mongoDB
 async function addUserToDB(username:string, email:string, uid:string): Promise<object | null> {
@@ -110,43 +80,6 @@ async function addUserToDB(username:string, email:string, uid:string): Promise<o
     return null
   }
 }
-/*
-async function addUserToDB(username:string, email:string, uid:string) {
-  let response = new Promise(async (resolve, reject) => {
-    let idToken = await auth.currentUser.getIdToken(true);
-    console.log("add user", idToken);
-
-    await fetch("http://localhost:3000/users/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: idToken,
-      },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        uid: uid,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.status === "success") {
-          resolve(data.user);
-          console.log("Add User Success:");
-          console.log(data);
-        } else {
-          reject(null);
-          console.log("Add User Failure:");
-          console.log(data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        reject(null);
-      });
-  });
-  return await response;
-} */
 
 //Sign up using username and password
 async function createUser(username: string, email: string, password: string) {
