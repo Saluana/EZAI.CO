@@ -4,6 +4,7 @@
   "description": "Easy to use GPT-3 based AI tools for everyday people.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brendon",
