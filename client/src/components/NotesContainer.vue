@@ -10,25 +10,39 @@
       <ion-button @click="getText(photo)" class="w-full h-auto" expand="block">
         <div class="flex flex-row items-center pt-1 pb-1">
           <ion-icon class="w-8 h-8 mr-1" :icon="document" />
-          <p class="antialiased text-lg">Give Me Text!</p>
+          <p class="antialiased text-lg">Render Text</p>
         </div>
       </ion-button>
     </div>
     <div v-if="photoText" class="flex flex-col w-11/12 mt-2">
       <div class="flex flex-row w-full">
-        <ion-button class="w-1/3" @click="changeView('text')">
+        <ion-button
+          class="w-1/3"
+          :class="{ 'active-tab': currentView.text }"
+          @click="changeView('text')"
+        >
           Text
         </ion-button>
         <ion-button v-if="!notes" class="w-1/3" @click="getNotes">
           Create Notes
         </ion-button>
-        <ion-button v-else class="w-1/3" @click="changeView('notes')">
+        <ion-button
+          v-else
+          class="w-1/3"
+          :class="{ 'active-tab': currentView.notes }"
+          @click="changeView('notes')"
+        >
           Notes
         </ion-button>
         <ion-button v-if="!summary" class="w-1/3" @click="getSummary">
           Summarize
         </ion-button>
-        <ion-button v-else class="w-1/3" @click="changeView('summary')">
+        <ion-button
+          v-else
+          class="w-1/3"
+          :class="{ 'active-tab': currentView.summary }"
+          @click="changeView('summary')"
+        >
           Summary
         </ion-button>
       </div>
@@ -202,5 +216,8 @@ export default {
 button {
   width: 100px;
   height: 40px;
+}
+.active-tab {
+  opacity: 0.65;
 }
 </style>

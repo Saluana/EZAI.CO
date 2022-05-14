@@ -6,7 +6,7 @@ const {getIdToken} = firebase
 async function correctGrammar(text: string): Promise<string | null>{
     const idToken = await getIdToken();
     const options = {
-        url: 'http://192.168.100.142:3000/image/correct',
+        url: 'https://server.ezai.co/image/correct',
         headers: {
             authorization: idToken,
             'Content-Type': 'application/json'
@@ -27,7 +27,7 @@ if (response.data.status === "success") {
 async function createNotes(text: string): Promise<string | null>{
 const idToken = await getIdToken();
 const options = {
-    url: 'http://192.168.100.142:3000/image/notes',
+    url: 'https://server.ezai.co/image/notes',
     headers: {
         authorization: idToken,
         'Content-Type': 'application/json'
@@ -47,7 +47,7 @@ if (response.data.status === "success") {
 async function summarizeText(text: string): Promise<string | null>{
     const idToken = await getIdToken();
     const options = {
-        url: 'http://192.168.100.142:3000/image/summarize',
+        url: 'https://server.ezai.co/image/summarize',
         headers: {
             authorization: idToken,
             'Content-Type': 'application/json'

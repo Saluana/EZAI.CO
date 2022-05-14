@@ -45,7 +45,7 @@ if (Capacitor.isNativePlatform()) {
 async function doesUserExist(uid: string): Promise<object | null> {
 const idToken = await getIdToken();
 const options = {
-  url: "http://192.168.100.142:3000/users/check/" + uid,
+  url: "https://server.ezai.co/users/check/" + uid,
   headers: {
       authorization: idToken,
       'Content-Type': 'application/json'
@@ -65,7 +65,7 @@ const options = {
 async function addUserToDB(username:string, email:string, uid:string): Promise<object | null> {
   const idToken = await getIdToken();
   const options = {
-    url: "http://192.168.100.142:3000/users/create",
+    url: "https://server.ezai.co/users/create",
     headers: {
       authorization: idToken,
       'Content-Type': 'application/json'

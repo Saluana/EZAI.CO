@@ -10,7 +10,7 @@ const configuration = new Configuration({
   const openai = new OpenAIApi(configuration);
   
   router.post("/notes", isTokenValid, async (req, res) => {
-    const response = await openai.createCompletion("text-davinci-002", {
+    const response = await openai.createCompletion("text-curie-001", {
       prompt: `Create a bullet point list of notes with all the key points from this article:  \n ${req.body.text}`,
       temperature: 0.7,
       max_tokens: 700,
@@ -45,7 +45,7 @@ const configuration = new Configuration({
 
   router.post("/correct", isTokenValid, async (req, res) => {
     console.log(req.body.text);
-    const response = await openai.createCompletion("text-davinci-002", {
+    const response = await openai.createCompletion("text-curie-001", {
       prompt: `${req.body.text} \n Correct the grammar, remove unexpected characters and add paragraphs where needed.`,
       temperature: 0.7,
       max_tokens: 700,
