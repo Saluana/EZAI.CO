@@ -14,11 +14,22 @@ const port = 3030
 
 app.use(express.json());
 
-app.get("/notes", async (req, res) => {
+app.get("/ping", (req, res) => {
+    res.send("pong");
+})
+
+app.post("/notes", async (req, res) => {
     const URI: string = req.body.URI;
+    console.log(URI)
     //Open new browser 
     const browser = await puppeteer.launch({
         headless: true,
+        args: [
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--no-sandbox",
+        ]
     });
     //Open new page
     const page = await browser.newPage();
@@ -171,11 +182,17 @@ app.get("/notes", async (req, res) => {
 })
 
 //Create a summary for a given URL
-app.get("/summary", async (req, res) => {
+app.post("/summary", async (req, res) => {
     const URI = req.body.URI;
     //Open new browser 
     const browser = await puppeteer.launch({
         headless: true,
+        args: [
+            "--disable-gpu",
+            "--disable-dev-shm-usage",
+            "--disable-setuid-sandbox",
+            "--no-sandbox",
+        ]
     });
     //Open new page
     const page = await browser.newPage();
