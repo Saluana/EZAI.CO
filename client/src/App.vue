@@ -27,7 +27,7 @@ export default defineComponent({
     watchEffect(() => {
       if (router.currentRoute.value.path === "/login" && isLoggedIn.value) {
         console.log("Router replace tab1");
-        router.replace("/tabs/tab1");
+        router.replace("/tabs/scan");
       } else if (
         router.currentRoute.value.path !== "/login" &&
         !isLoggedIn.value

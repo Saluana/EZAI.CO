@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Tab 1</ion-title>
+        <ion-title>Scan</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
@@ -12,7 +12,7 @@
         </ion-toolbar>
       </ion-header>
 
-      <NotesContainer name="Tab 1 page" />
+      <NotesContainer name="scan" />
     </ion-content>
   </ion-page>
 </template>
@@ -29,7 +29,7 @@ import {
 import NotesContainer from "../components/NotesContainer.vue";
 
 export default defineComponent({
-  name: "Tab1Page",
+  name: "ScanPage",
   components: {
     NotesContainer,
     IonHeader,

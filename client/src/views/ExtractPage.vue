@@ -2,20 +2,16 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Tab 2</ion-title>
+        <ion-title>Extract</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Tab 2</ion-title>
+          <ion-title size="large">Extract</ion-title>
         </ion-toolbar>
       </ion-header>
-
-      <ExploreContainer name="Tab 2 page" />
-      <button @click="doesUserExist('wplWA58hamWdJVVzaka9m8p5iMQ2')">
-        Does user exist
-      </button>
+      <UrlContainer name="Tab 2 page" />
     </ion-content>
   </ion-page>
 </template>
@@ -29,13 +25,12 @@ import {
   IonTitle,
   IonContent,
 } from "@ionic/vue";
-import ExploreContainer from "../components/ExploreContainer.vue";
-import firebase from "../firebase/firebase";
+import UrlContainer from "../components/UrlContainer.vue";
 
 export default defineComponent({
   name: "Tab2Page",
   components: {
-    ExploreContainer,
+    UrlContainer,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -43,10 +38,7 @@ export default defineComponent({
     IonPage,
   },
   setup() {
-    const { doesUserExist } = firebase;
-    return {
-      doesUserExist,
-    };
+    return {};
   },
 });
 </script>

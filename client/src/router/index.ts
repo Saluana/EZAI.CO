@@ -21,16 +21,16 @@ const routes: Array<RouteRecordRaw> = [
         redirect: '/tabs/tab1'
       },
       {
-        path: 'tab1',
-        component: () => import('@/views/Tab1Page.vue')
+        path: 'scan',
+        component: () => import('@/views/ScanPage.vue')
       },
       {
-        path: 'tab2',
-        component: () => import('@/views/Tab2Page.vue')
+        path: 'extract',
+        component: () => import('@/views/ExtractPage.vue')
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: 'folder',
+        component: () => import('@/views/FolderPage.vue')
       }
     ]
   }

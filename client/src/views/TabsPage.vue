@@ -3,17 +3,17 @@
     <ion-tabs>
       <ion-router-outlet></ion-router-outlet>
       <ion-tab-bar slot="bottom">
-        <ion-tab-button tab="tab1" href="/tabs/tab1">
+        <ion-tab-button tab="scan" href="/tabs/scan">
           <ion-icon :icon="scanCircle" />
           <ion-label>Scan</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab2" href="/tabs/tab2">
+        <ion-tab-button tab="extract" href="/tabs/extract">
           <ion-icon :icon="linkOutline" />
           <ion-label>Extract</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" href="/tabs/tab3">
+        <ion-tab-button tab="folder" href="/tabs/folder">
           <ion-icon :icon="folder" />
           <ion-label>Folder</ion-label>
         </ion-tab-button>
