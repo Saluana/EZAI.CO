@@ -41,9 +41,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var axios_1 = __importDefault(require("axios"));
-//import {isTokenValid} from "../../middleware/authorization"
+var authorization_1 = require("../../middleware/authorization");
 var router = express_1.default.Router();
-router.get("/summary", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/summary", authorization_1.isTokenValid, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var uri, decodedUri, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -51,7 +51,7 @@ router.get("/summary", function (req, res) { return __awaiter(void 0, void 0, vo
                 uri = typeof req.query.uri === "string" ? req.query.uri : "";
                 decodedUri = decodeURIComponent(uri);
                 if (!(uri.length > 0)) return [3 /*break*/, 2];
-                return [4 /*yield*/, axios_1.default.post("http://172.18.0.2:3030/summary", { URI: decodedUri })];
+                return [4 /*yield*/, axios_1.default.post("http://scraper-api:3030/summary", { URI: decodedUri })];
             case 1:
                 response = _a.sent();
                 return [3 /*break*/, 3];
@@ -67,13 +67,13 @@ router.get("/summary", function (req, res) { return __awaiter(void 0, void 0, vo
         }
     });
 }); });
-router.get("/notes", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+router.get("/notes", authorization_1.isTokenValid, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var uri, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 uri = req.query.uri;
-                return [4 /*yield*/, axios_1.default.post("http://172.18.0.2:3030/notes", { URI: uri })];
+                return [4 /*yield*/, axios_1.default.post("http://scraper-api:3030/notes", { URI: uri })];
             case 1:
                 response = _a.sent();
                 if (!response) {

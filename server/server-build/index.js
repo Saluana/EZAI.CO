@@ -63,7 +63,7 @@ app.get("/ping", function (req, res) { return __awaiter(void 0, void 0, void 0, 
     var response;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1.default.get("http://172.18.0.2:3030/ping")];
+            case 0: return [4 /*yield*/, axios_1.default.get("http://scraper-api:3030/ping")];
             case 1:
                 response = _a.sent();
                 res.send(response.data);

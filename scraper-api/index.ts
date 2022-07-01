@@ -42,10 +42,10 @@ app.post("/notes", async (req, res) => {
         return res.json({status: "failure", message: "Page not found.", response: null});
     }
     try {
-    var textContent: string[] = await page.evaluate(()=>{
+    var textContent: string[] | null = await page.evaluate(()=>{
 
         let article;
-        let text: string[] = [];
+        let text: string[] | null = [];
         console.log(document.querySelector('body').innerText)
         //Select the article
         if (document.querySelector("article")) {
@@ -72,19 +72,33 @@ app.post("/notes", async (req, res) => {
         } else if (document.querySelector('.article-details')) {
             article = document.querySelector('.article-details');
             console.log(".article-details found");
+        } else {
+            return null
         }
 
         //select all paragraph tags from the article
+        if (article != null) {
         article.querySelectorAll("p").forEach((p) => {
         text.push(p.innerText);
         })
+        } else {
+            text = null
+        }
 
         return text;
     })
     } catch (error) {
     console.log(error);
+    await browser.close();
     return res.json({status: "failure", message: "Problem finding article"});
     }
+
+    await browser.close();
+
+    if (textContent == null) {
+        return res.json({status: "failure", message: "Problem retrieving article"});
+    }
+
     //Remove all empty items from array
     textContent.forEach(i => {
         if (i === "") {
@@ -95,8 +109,6 @@ app.post("/notes", async (req, res) => {
     if (textContent.length === 0) {
         return res.json({status: "failure", message: "No text found"});
     }
-
-    await browser.close();
 
     //Split the websites text content into 3 equal chunks
     const content: string = textContent.join(" ")
@@ -205,10 +217,10 @@ app.post("/summary", async (req, res) => {
         return res.json({status: "failure", message: "Page not found.", response: null});
     }
     try {
-    var textContent: string[] = await page.evaluate(()=>{
+    var textContent: string[] | null = await page.evaluate(()=>{
 
         let article: HTMLElement;
-        let text: string[] = [];
+        let text: string[] | null = [];
         console.log(document.querySelector('body').innerText)
         //Select the article
         if (document.querySelector("article")) {
@@ -227,12 +239,18 @@ app.post("/summary", async (req, res) => {
             article = document.querySelector('.content-area');
         } else if (document.querySelector('.article-details')) {
             article = document.querySelector('.article-details');
+        } else {
+            article = null
         }
 
         //select all paragraph tags from the article
+        if (article != null) {
         article.querySelectorAll("p").forEach((p) => {
         text.push(p.innerText);
         })
+    } else {
+        text = null;
+    }
 
         return text;
     })
@@ -240,6 +258,13 @@ app.post("/summary", async (req, res) => {
     console.log(error);
     return res.json({status: "failure", message: "Problem finding article"});
     }
+
+    await browser.close();
+
+    if (textContent === null) {
+        return res.json({status: "failure", message: "Problem retrieving article"});
+    }
+
     //Remove all empty items from array
     textContent.forEach(i => {
         if (i === "") {
@@ -251,7 +276,6 @@ app.post("/summary", async (req, res) => {
         return res.json({status: "failure", message: "No text found"});
     }
 
-    await browser.close();
 
     //Split the websites text content into 3 equal chunks
     const content: string = textContent.join(" ")

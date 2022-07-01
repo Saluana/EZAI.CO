@@ -31,6 +31,8 @@ import firebaseConfig from "./firebase-config";
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
+const userServerUrl = "http://localhost:8080"
+
 //Authenticate with username and password
 let auth: any;
 if (Capacitor.isNativePlatform()) {
@@ -45,7 +47,7 @@ if (Capacitor.isNativePlatform()) {
 async function doesUserExist(uid: string): Promise<object | null> {
 const idToken = await getIdToken();
 const options = {
-  url: "https://server.ezai.co/users/check/" + uid,
+  url: `${userServerUrl}/users/check/` + uid,
   headers: {
       authorization: idToken,
       'Content-Type': 'application/json'
@@ -65,7 +67,7 @@ const options = {
 async function addUserToDB(username:string, email:string, uid:string): Promise<object | null> {
   const idToken = await getIdToken();
   const options = {
-    url: "https://server.ezai.co/users/create",
+    url: `${userServerUrl}/users/create`,
     headers: {
       authorization: idToken,
       'Content-Type': 'application/json'
@@ -122,10 +124,12 @@ function signInWithEmail(email: string, password: string) {
 }
 
 //Login using Google
-onAuthStateChanged(auth, (change) => {
+onAuthStateChanged(auth, async (change) => {
   if (change) {
     if (change.hasOwnProperty("uid")) {
       isLoggedIn.value = true;
+      let user = await doesUserExist(change.uid)
+      console.log(user)
     }
   }
 });

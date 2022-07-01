@@ -25,7 +25,7 @@ res.send("Hello world");
 })
 
 app.get("/ping", async (req, res) => {
-  const response = await axios.get("http://172.18.0.2:3030/ping");
+  const response = await axios.get("http://scraper-api:3030/ping");
   res.send(response.data);
 })
 

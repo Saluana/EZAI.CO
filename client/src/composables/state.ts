@@ -1,6 +1,18 @@
 import { ref } from "vue";
 import { menuController } from "@ionic/vue";
 //import { Storage } from "@capacitor/storage";
+interface Folder {
+    date: string;
+    documents: string[];
+    title: string;
+    user: {
+        username: string,
+        uid: string,
+    };
+    __v: number;
+    _id: string;
+}
+
 interface User {
     _id: string;
     username: string | null;
@@ -9,6 +21,7 @@ interface User {
     role: string | null;
     uid: string | null;
     __v: number | null;
+    folders: Folder[] | null;
 }
 const user = ref<User>({
     _id: "",
@@ -17,7 +30,8 @@ const user = ref<User>({
     tokens: null,
     role: null,
     uid: null,
-    __v: null
+    __v: null,
+    folders: null
 });
 const isLoggedIn = ref<boolean>(false);
 
