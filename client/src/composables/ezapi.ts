@@ -160,6 +160,7 @@ async function getUrlNotes (url: string): Promise<article | null> {
     }
 
     /* DOCUMENTS AND FOLDERS */
+    //Get all folders
     async function getFolders (): Promise<any> {
         const idToken = await getIdToken();
         const options = {
@@ -179,6 +180,7 @@ async function getUrlNotes (url: string): Promise<article | null> {
         }
     }
 
+    //Create a new folder
     async function createFolder (title: string): Promise<any> {
         const idToken = await getIdToken();
         const options = {
@@ -199,6 +201,7 @@ async function getUrlNotes (url: string): Promise<article | null> {
         }
     }
 
+    //Delete a folder
     async function deleteFolder (uid: string) {
         const idToken = await getIdToken();
         const options = {
@@ -219,6 +222,7 @@ async function getUrlNotes (url: string): Promise<article | null> {
         }
     }
 
+    //Edit a folder
     async function editFolder (folderId: string, title: string) {
         const idToken = await getIdToken();
         const options = {
@@ -239,6 +243,90 @@ async function getUrlNotes (url: string): Promise<article | null> {
         }
     }
 
-export default {correctGrammar, createNotes, summarizeText, getUrlSummary, getUrlNotes, scanImage, getFolders, createFolder, deleteFolder, editFolder}
+    /* DOCUMENTS */ 
+    //Get all documents
+    async function getDocuments (folderId: string|string[]): Promise<any> {
+        const idToken = await getIdToken();
+        const options = {
+            url: `${userServerUrl}/docs/get-files?folderId=${folderId}`,
+            headers: {
+                authorization: idToken,
+                'Content-Type': 'application/json'
+        }
+        }
+        const response: any = await Http.get(options);
+        if (response.data.status === "success") {
+            console.log("documents response", response)
+            return response.data.files;
+        } else {
+            console.log("documents failure", null)
+            return null;
+        }
+    }
+
+    //Create a new document
+    async function createDocument (title: string, folderId: string|string[], content: string): Promise<any> {
+        const idToken = await getIdToken();
+        const options = {
+            url: `${userServerUrl}/docs/new-file`,
+            headers: {
+                authorization: idToken,
+                'Content-Type': 'application/json'
+        }, data: {title: title, folderId: folderId, content: content}
+        }
+        const response: any = await Http.post(options);
+
+        if (response.data.status === "success") { 
+            console.log("document response", response)
+            return response.data
+        } else {
+            console.log("document failure", null)
+            return null;
+        }
+    }
+
+    //Delete a document
+    async function deleteDocument (fileId: string) {
+        const idToken = await getIdToken();
+        const options = {
+            url: `${userServerUrl}/docs/remove-file`,
+            headers: {
+                authorization: idToken,
+                'Content-Type': 'application/json'
+        }, data: {fileId: fileId}
+        }
+        const response: any = await Http.post(options);
+
+        if (response.data.status === "success") { 
+            console.log("document response", response)
+            return response.data
+        } else {
+            console.log("document failure", null)
+            return null;
+        }
+    }
+
+    //Edit a document
+    async function editDocument (fileId: string, title: string, content: string) {
+        const idToken = await getIdToken();
+        const options = {
+            url: `${userServerUrl}/docs/update-file`,
+            headers: {
+                authorization: idToken,
+                'Content-Type': 'application/json'
+        }, data: {fileId: fileId, title: title, content: content}
+        }
+        const response: any = await Http.put(options);
+        
+        if (response.data.status === "success") {
+            console.log("document response", response)
+            return response.data
+        } else {
+            console.log("document failure", null)
+            return null;
+        }
+    }
+
+export default {correctGrammar, createNotes, summarizeText, getUrlSummary, getUrlNotes, scanImage, getFolders, createFolder, deleteFolder, editFolder, getDocuments, createDocument, deleteDocument, editDocument}
 
 

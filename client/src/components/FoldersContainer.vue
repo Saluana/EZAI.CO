@@ -20,7 +20,7 @@
           >
         </ion-item-options>
 
-        <ion-item>
+        <ion-item @click="viewFolder(fldr._id)">
           <ion-icon
             class="w-12 h-12 mr-3 opacity-70"
             color="primary"
@@ -87,6 +87,7 @@ import {
 import { folder } from "ionicons/icons";
 import ezapi from "../composables/ezapi";
 import state from "../composables/state";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "FilesContainer",
@@ -114,6 +115,11 @@ export default defineComponent({
     const modalIsOpen = ref(false);
     const currentlyEditing = ref("");
     const newFolderTitle = ref("");
+    const router = useRouter();
+
+    function viewFolder(_id: string) {
+      router.push({ path: `/tabs/folder/${_id}` });
+    }
 
     function setModal(bool: any) {
       if (bool) {
@@ -148,6 +154,7 @@ export default defineComponent({
       currentlyEditing,
       newFolderTitle,
       changeFolder,
+      viewFolder,
     };
   },
 });

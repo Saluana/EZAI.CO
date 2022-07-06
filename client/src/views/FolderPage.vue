@@ -53,7 +53,7 @@
         </ion-content>
       </ion-modal>
 
-      <FilesContainer />
+      <FoldersContainer />
     </ion-content>
   </ion-page>
 </template>
@@ -73,14 +73,14 @@ import {
   IonInput,
 } from "@ionic/vue";
 import { addCircle } from "ionicons/icons";
-import FilesContainer from "../components/FilesContainer.vue";
+import FoldersContainer from "../components/FoldersContainer.vue";
 import ezapi from "../composables/ezapi";
 import state from "../composables/state";
 
 export default defineComponent({
   name: "Tab3Page",
   components: {
-    FilesContainer,
+    FoldersContainer,
     IonHeader,
     IonToolbar,
     IonTitle,
