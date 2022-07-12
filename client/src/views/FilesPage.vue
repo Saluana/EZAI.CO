@@ -25,7 +25,7 @@
             >
           </ion-item-options>
 
-          <ion-item>
+          <ion-item @click="editDocument(doc._id, doc.title, doc.content)">
             <ion-icon
               class="w-12 h-12 mr-3 opacity-70"
               color="primary"
@@ -73,7 +73,8 @@
 
 <script lang="ts">
 import ezapi from "../composables/ezapi";
-import { useRoute } from "vue-router";
+import state from "../composables/state";
+import { useRoute, useRouter } from "vue-router";
 import { defineComponent, onMounted, ref } from "vue";
 import { document, addCircle } from "ionicons/icons";
 import {
@@ -121,6 +122,9 @@ export default defineComponent({
   setup() {
     const { getDocuments, deleteDocument, createDocument } = ezapi;
     const route = useRoute();
+    const router = useRouter();
+    const { docToEdit } = state;
+
     const modalIsOpen = ref(false);
     const newDocumentTitle = ref("");
 
@@ -158,6 +162,21 @@ export default defineComponent({
       );
       if (response) {
         documents.value = await getDocuments(route.params.id);
+        newDocumentTitle.value = "";
+        setModal(false);
+      }
+    }
+
+    function editDocument(_id: string, title: string, content: string) {
+      if (_id && title && content) {
+        docToEdit.value = {
+          _id,
+          title,
+          content,
+        };
+        router.push(`/tabs/note/${_id}`);
+      } else {
+        return;
       }
     }
 
@@ -170,6 +189,7 @@ export default defineComponent({
       modalIsOpen,
       newDocumentTitle,
       newDocument,
+      editDocument,
     };
   },
 });

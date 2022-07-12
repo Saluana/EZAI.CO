@@ -35,6 +35,10 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'folder/:id',
         component: () => import('@/views/FilesPage.vue'),
+      },
+      {
+        path: 'note/:id',
+        component: () => import('@/views/EditPage.vue'),
       }
     ]
   }

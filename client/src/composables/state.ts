@@ -33,6 +33,19 @@ const user = ref<User>({
     __v: null,
     folders: null
 });
+
+interface Note {
+    _id: string;
+    title: string;
+    content: string;
+}
+
+const docToEdit = ref<Note>({
+    _id: "",
+    title: "",
+    content: ""
+})
+
 const isLoggedIn = ref<boolean>(false);
 
 const menuIsOpen = ref<boolean>(false);
@@ -47,4 +60,5 @@ export default {
   isLoggedIn,
   menuIsOpen,
   toggleMenu,
+  docToEdit
 };

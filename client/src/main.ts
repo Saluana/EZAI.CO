@@ -24,9 +24,13 @@ import '@ionic/vue/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
+import Quill from 'vue3-quilljs'
+import 'vue3-quilljs/lib/style.css'
+
 const app = createApp(App)
   .use(IonicVue)
-  .use(router);
+  .use(router)
+  .use(Quill)
   
 router.isReady().then(() => {
   app.mount('#app');
