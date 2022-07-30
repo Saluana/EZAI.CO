@@ -128,8 +128,6 @@ onAuthStateChanged(auth, async (change) => {
   if (change) {
     if (change.hasOwnProperty("uid")) {
       isLoggedIn.value = true;
-      let user = await doesUserExist(change.uid)
-      console.log(user)
     }
   }
 });

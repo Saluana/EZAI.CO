@@ -21,7 +21,8 @@ interface User {
     role: string | null;
     uid: string | null;
     __v: number | null;
-    folders: Folder[] | null;
+    folders?: Folder[] | null;
+    documents?: any | null;
 }
 const user = ref<User>({
     _id: "",
@@ -31,19 +32,24 @@ const user = ref<User>({
     role: null,
     uid: null,
     __v: null,
-    folders: null
+    folders: null,
+    documents: {}
 });
 
 interface Note {
     _id: string;
     title: string;
     content: string;
+    folderId?: string;
+    index?: number | null;
 }
 
 const docToEdit = ref<Note>({
     _id: "",
     title: "",
-    content: ""
+    content: "", 
+    folderId: "",
+    index: null
 })
 
 const isLoggedIn = ref<boolean>(false);
@@ -60,5 +66,7 @@ export default {
   isLoggedIn,
   menuIsOpen,
   toggleMenu,
-  docToEdit
+  docToEdit,
 };
+
+export { User }

@@ -18,14 +18,20 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-list>
-        <ion-item-sliding v-for="doc in documents" :key="doc._id" class="m-0">
+        <ion-item-sliding
+          v-for="(doc, index) in user.documents[folderId]"
+          :key="doc._id"
+          class="m-0"
+        >
           <ion-item-options side="end">
             <ion-item-option color="danger" @click="removeDocument(doc._id)"
               >Remove</ion-item-option
             >
           </ion-item-options>
 
-          <ion-item @click="editDocument(doc._id, doc.title, doc.content)">
+          <ion-item
+            @click="editDocument(doc._id, doc.title, doc.content, index)"
+          >
             <ion-icon
               class="w-12 h-12 mr-3 opacity-70"
               color="primary"
@@ -75,8 +81,9 @@
 import ezapi from "../composables/ezapi";
 import state from "../composables/state";
 import { useRoute, useRouter } from "vue-router";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import { document, addCircle } from "ionicons/icons";
+import { Storage } from "@capacitor/storage";
 import {
   IonPage,
   IonHeader,
@@ -123,7 +130,8 @@ export default defineComponent({
     const { getDocuments, deleteDocument, createDocument } = ezapi;
     const route = useRoute();
     const router = useRouter();
-    const { docToEdit } = state;
+    const folderId = route.params.id as string;
+    const { docToEdit, user } = state;
 
     const modalIsOpen = ref(false);
     const newDocumentTitle = ref("");
@@ -136,17 +144,14 @@ export default defineComponent({
       }
     }
 
-    const documents = ref([]);
-
-    onMounted(async () => {
-      documents.value = await getDocuments(route.params.id);
-      console.log(documents.value);
-    });
-
     async function removeDocument(fileId: string) {
       const response = await deleteDocument(fileId);
       if (response) {
-        documents.value = await getDocuments(route.params.id);
+        user.value.documents[folderId] = await getDocuments(route.params.id);
+        await Storage.set({
+          key: `userData`,
+          value: JSON.stringify(user.value),
+        });
       }
     }
 
@@ -161,18 +166,29 @@ export default defineComponent({
         ""
       );
       if (response) {
-        documents.value = await getDocuments(route.params.id);
+        user.value.documents[folderId] = await getDocuments(route.params.id);
+        await Storage.set({
+          key: `userData`,
+          value: JSON.stringify(user.value),
+        });
         newDocumentTitle.value = "";
         setModal(false);
       }
     }
 
-    function editDocument(_id: string, title: string, content: string) {
-      if (_id && title && content) {
+    function editDocument(
+      _id: string,
+      title: string,
+      content: string,
+      index: number
+    ) {
+      if (_id) {
         docToEdit.value = {
           _id,
           title,
           content,
+          folderId,
+          index,
         };
         router.push(`/tabs/note/${_id}`);
       } else {
@@ -181,7 +197,6 @@ export default defineComponent({
     }
 
     return {
-      documents,
       document,
       addCircle,
       removeDocument,
@@ -190,6 +205,8 @@ export default defineComponent({
       newDocumentTitle,
       newDocument,
       editDocument,
+      user,
+      folderId,
     };
   },
 });

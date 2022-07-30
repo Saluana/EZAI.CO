@@ -244,11 +244,31 @@ async function getUrlNotes (url: string): Promise<article | null> {
     }
 
     /* DOCUMENTS */ 
-    //Get all documents
+    //Get all documents in a single folder
     async function getDocuments (folderId: string|string[]): Promise<any> {
         const idToken = await getIdToken();
         const options = {
             url: `${userServerUrl}/docs/get-files?folderId=${folderId}`,
+            headers: {
+                authorization: idToken,
+                'Content-Type': 'application/json'
+        }
+        }
+        const response: any = await Http.get(options);
+        if (response.data.status === "success") {
+            console.log("documents response", response)
+            return response.data.files;
+        } else {
+            console.log("documents failure", null)
+            return null;
+        }
+    }
+
+    //Get all documents for a user
+    async function getAllDocuments (): Promise<any> {
+        const idToken = await getIdToken();
+        const options = {
+            url: `${userServerUrl}/docs/get-all-files`,
             headers: {
                 authorization: idToken,
                 'Content-Type': 'application/json'
@@ -327,6 +347,6 @@ async function getUrlNotes (url: string): Promise<article | null> {
         }
     }
 
-export default {correctGrammar, createNotes, summarizeText, getUrlSummary, getUrlNotes, scanImage, getFolders, createFolder, deleteFolder, editFolder, getDocuments, createDocument, deleteDocument, editDocument}
+export default {correctGrammar, createNotes, summarizeText, getUrlSummary, getUrlNotes, scanImage, getFolders, createFolder, deleteFolder, editFolder, getDocuments, getAllDocuments, createDocument, deleteDocument, editDocument}
 
 

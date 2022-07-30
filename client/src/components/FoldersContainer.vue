@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, ref } from "vue";
 import {
   IonList,
   IonLabel,
@@ -140,10 +140,6 @@ export default defineComponent({
       currentlyEditing.value = "";
       setModal(false);
     }
-
-    onMounted(async () => {
-      user.value.folders = await getFolders();
-    });
 
     return {
       folder,

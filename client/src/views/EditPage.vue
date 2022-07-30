@@ -17,7 +17,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content :fullscreen="true" v-if="!editModeOn">
-      <div v-html="rawHTML" v-if="!editModeOn" class="px-4"></div>
+      <div v-html="rawHTML" v-if="!editModeOn" class="px-4 py-4"></div>
     </ion-content>
     <ion-content :fullscreen="true" v-else>
       <richTextEditor
@@ -32,9 +32,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onUnmounted } from "vue";
 import ezapi from "../composables/ezapi";
 import state from "../composables/state";
+import { Storage } from "@capacitor/storage";
 import {
   IonPage,
   IonHeader,
@@ -59,7 +60,7 @@ export default defineComponent({
     IonBackButton,
   },
   setup() {
-    const { docToEdit } = state;
+    const { docToEdit, user } = state;
     const { editDocument } = ezapi;
 
     const rawHTML = ref(docToEdit.value.content ? docToEdit.value.content : "");
@@ -75,7 +76,19 @@ export default defineComponent({
         docToEdit.value.title,
         rawHTML.value
       );
+
       console.log(newDoc);
+
+      if (newDoc) {
+        user.value.documents[docToEdit.value.folderId as string][
+          docToEdit.value.index as number
+        ].content = rawHTML;
+        await Storage.set({
+          key: `docs`,
+          value: JSON.stringify(user.value.documents),
+        });
+        editModeOn.value = false;
+      }
     }
 
     const toolBarConfig = [
@@ -85,6 +98,16 @@ export default defineComponent({
       [{ align: [] }],
       ["clean"],
     ];
+
+    onUnmounted(() => {
+      docToEdit.value = {
+        _id: "",
+        title: "",
+        content: "",
+        folderId: "",
+        index: 0,
+      };
+    });
 
     return {
       toolBarConfig,
